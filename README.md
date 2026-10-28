@@ -1,10 +1,8 @@
+
 # Windows Server Homelab: File Services, Network Sharing, and Group Policy Drive Mapping
 
-## Project Overview
 
-This project demonstrates how to configure centralized file sharing in a Windows Server environment integrated with Active Directory Domain Services (AD DS). It covers creating shared folders, managing user permissions, mapping network drives on client computers, automating drive mapping through Group Policy, and managing storage with File Server Resource Manager (FSRM).
-
-The goal was to simulate common IT support and system administration tasks performed in a business environment.
+This project covers creating shared folders, managing user permissions, mapping network drives on client computers, automating drive mapping through Group Policy, and managing storage with File Server Resource Manager (FSRM).The goal was to simulate common IT support and system administration tasks performed in a business environment.
 
 ## Objectives
 
@@ -16,31 +14,19 @@ The goal was to simulate common IT support and system administration tasks perfo
 - Configure storage quotas and file screening with FSRM.
 - Troubleshoot network share and Group Policy issues.
 
-## Lab Environment
-
-| Component | Purpose |
-|---|---|
-| Windows Server | Hosts shared folders and manages file access |
-| Active Directory Domain Services | Centralized user and computer authentication |
-| Group Policy Management | Automates user configurations |
-| Windows 10/11 Pro or Enterprise client | Tests access to shared resources |
-| File Server Resource Manager | Controls storage consumption and file types |
-
 **Prerequisites:** A functioning Active Directory domain, a domain-joined client machine, administrative access to the server, and network connectivity between the client and server.
-
-*Note: Replace example server names, domain names, usernames, and folder paths with the actual values used in your lab.*
 
 ---
 
-## 1. Understanding File Sharing and Permissions
+# Understanding File Sharing and Permissions
 
 File sharing allows multiple authorized users to access files stored centrally on a server. In a business environment, this makes it easier to collaborate, manage data, and control access to organizational resources.
 
-### NTFS Permissions vs. Share Permissions
+   NTFS Permissions vs. Share Permissions
 
-**NTFS permissions** control access to files and folders on an NTFS-formatted volume. They can apply to individual files, folders, and subfolders.
+   - NTFS permissions: control access to files and folders on an NTFS-formatted volume. They can apply to individual files, folders, and subfolders.
 
-**Share permissions** control access when a folder is accessed through a network share.
+   - Share permissions: control access when a folder is accessed through a network share.
 
 Common permission levels include:
 
@@ -51,44 +37,58 @@ Common permission levels include:
 
 When accessing a folder through a network share, the effective access is determined by both share permissions and NTFS permissions. In general, the more restrictive applicable permission limits the user's access.
 
-**Security best practice:** Grant permissions to appropriate Active Directory security groups rather than assigning access individually to many users. Follow the principle of least privilege.
+---
 
-## 2. Creating a Shared Folder
+# Creating a Shared Folder
 
 The first task was to create a folder on the Windows Server that domain users could access over the network.
 
-### Steps
+Steps
 
-1. Sign in to Windows Server using an administrative account.
-2. Open File Explorer.
-3. Create a folder, for example:
+Step 1. Sign in to Windows Server using an administrative account.
 
-   `C:\Shared`
+Step 2. Open File Explorer.
 
-4. Right-click the folder and select **Properties**.
-5. Open the **Sharing** tab.
-6. Select **Advanced Sharing**.
-7. Enable **Share this folder**.
-8. Specify a share name, such as `Shared`.
-9. Open the share permissions and configure the intended users or groups.
-10. Open the **Security** tab and configure the corresponding NTFS permissions.
-11. Apply the changes.
+Step 3. Create a folder name it Shared
 
-The resulting network path should resemble:
+<img width="1056" height="781" alt="1 Create new folder" src="https://github.com/user-attachments/assets/c3847714-88af-4fec-8d3b-3189f5e1a578" />
 
-`\\SERVERNAME\Shared`
 
-Replace `SERVERNAME` with the actual server hostname.
+Step 4. Right-click the folder and select Properties.
 
-### Validation
+Step 5. Open the Sharing tab.
+
+Step 6. Select Advanced Sharing.
+
+<img width="551" height="614" alt="2 Advance Sharing" src="https://github.com/user-attachments/assets/fddf9215-cccd-40f7-83fb-9c7a9dd1afcb" />
+
+
+Step 7. Enable Share this folder.
+
+<img width="405" height="573" alt="3 Share this folder" src="https://github.com/user-attachments/assets/5d27b5ba-f725-4107-b173-e87fb9a8dfd6" />
+
+
+Step 8. Specify a share name, such as Shared.
+
+Step 9. Open the share permissions and configure the intended users or groups.
+
+Step 10. Open the Security tab and configure the corresponding NTFS permissions.
+
+Step 11. Apply the changes.
+
+The resulting network path should resemble: \\SERVERNAME\Shared. 
+
+Replace "SERVERNAME" with the actual server hostname.
+
+**Verify**
 
 Confirm that the folder is shared and that the intended domain users have appropriate access. Test with a standard domain account rather than relying exclusively on an administrator account.
 
-## 3. Accessing the Share from a Client Machine
+---
+
+# Accessing the Share from a Client Machine
 
 After configuring the share, the next step was to verify that a client computer could access the resource.
-
-### Steps
 
 1. Sign in to the Windows client using a domain account.
 2. Open File Explorer.
@@ -100,11 +100,13 @@ After configuring the share, the next step was to verify that a client computer 
 5. Verify that the shared folder opens.
 6. Test whether the user can perform only the actions permitted by the assigned permissions.
 
-### Validation
+**Verify**
 
 A successful connection confirms that the client can reach the share and authenticate with sufficient permissions.
 
 If access fails, verify the server name, network connectivity, DNS resolution, firewall configuration, share permissions, and NTFS permissions.
+
+---
 
 ## 4. Mapping a Network Drive
 
@@ -131,6 +133,8 @@ For example, the shared folder can be mapped to drive `S:`.
 Open the mapped drive and test access to the shared files.
 
 Manual mapping is useful for initial testing, but centrally managed environments benefit from Group Policy because administrators can automatically configure drive mappings for users.
+
+---
 
 ## 5. Automating Network Drive Mapping with Group Policy
 
@@ -192,6 +196,8 @@ Open File Explorer and verify that the `S:` drive appears and opens successfully
 
 The network drive is mapped automatically for users within the GPO's scope, without requiring them to configure the drive manually.
 
+--- 
+
 ## 6. Installing File Server Resource Manager (FSRM)
 
 File Server Resource Manager is a Windows Server feature that helps administrators manage storage on file servers. It supports quota management, file screening, and storage reporting.
@@ -209,6 +215,9 @@ These controls help prevent shared folders from consuming excessive storage and 
 7. Open File Server Resource Manager from Server Manager or the administrative tools.
 
 Menu names can vary slightly depending on the Windows Server version.
+
+
+---
 
 ## 7. Configuring Storage Quotas
 
@@ -342,62 +351,8 @@ If necessary, review the Group Policy operational log in Event Viewer for additi
 3. Verify the active or passive setting.
 4. Test with a new file that matches a restricted extension.
 
----
 
-## 10. Skills Demonstrated
 
-This project demonstrates practical experience with:
 
-- Windows Server administration.
-- Active Directory and domain-user authentication.
-- SMB network file sharing.
-- NTFS and share permission management.
-- UNC paths and mapped network drives.
-- Group Policy Management and Drive Maps preferences.
-- GPO scope and policy troubleshooting.
-- File Server Resource Manager.
-- Storage quota configuration.
-- File screening and storage policy enforcement.
-- Basic network and access-control troubleshooting.
 
-## 11. Business Relevance
 
-In a real IT environment, file servers provide a centralized location for company documents, departmental resources, and shared operational data.
-
-The techniques demonstrated in this project help IT support technicians and system administrators:
-
-- Provision access to shared resources.
-- Apply consistent drive mappings across users.
-- Troubleshoot file access and authentication issues.
-- Limit storage consumption.
-- Enforce file-storage policies.
-- Reduce repetitive workstation configuration.
-
-These are relevant responsibilities for help desk, desktop support, Windows system administration, and junior infrastructure roles.
-
-## 12. Future Improvements
-
-Possible extensions to this lab include:
-
-- Creating department-specific shares for HR, Finance, and IT.
-- Using Active Directory security groups to control access.
-- Applying least-privilege permissions to each department.
-- Testing access with multiple standard domain accounts.
-- Configuring auditing for file access.
-- Creating storage usage reports.
-- Documenting a repeatable troubleshooting workflow.
-- Capturing screenshots of successful configuration and testing.
-
-## Conclusion
-
-This project demonstrates how to configure and manage shared network resources in a Windows Server domain environment. By combining folder permissions, network drive mapping, Group Policy automation, and FSRM, administrators can provide users with consistent access while maintaining control over shared storage.
-
-The lab provides a foundation for more advanced Windows administration and IT support projects.
-
-## References
-
-- **Original tutorial:** [File Services Homelab: Setting up Network Sharing on Windows Server (Ep. 4)](https://www.youtube.com/watch?v=OBnuOOWdEmc)
-
----
-
-**Portfolio note:** Add screenshots of your actual server configuration, the shared folder permissions, the applied Group Policy, the mapped drive on the client, and your FSRM settings. Include a short explanation of what each screenshot proves. Document the settings you personally implemented and tested, and identify any sections that remain planned or untested.
